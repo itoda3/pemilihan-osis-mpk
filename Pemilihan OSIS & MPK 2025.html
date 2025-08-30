@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pemilihan OSIS & MPK SMA TN</title>
+    <!-- Memuat Tailwind CSS untuk styling yang cepat -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f3f4f6;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 p-4">
+
+    <!-- Kontainer Utama Formulir -->
+    <div class="bg-white rounded-xl shadow-lg p-8 w-full max-w-lg">
+        <h1 class="text-3xl font-bold text-center text-gray-800 mb-6">Pemilihan OSIS dan MPK SMA TN 2025</h1>
+        <p class="text-center text-gray-500 mb-8">Isi data di bawah ini. Setelah dikirim, formulir akan otomatis kembali kosong.</p>
+
+        <!-- Pesan Status (Sukses/Error) -->
+        <div id="statusMessage" class="hidden text-center p-3 rounded-lg font-medium mb-6"></div>
+
+        <!-- Formulir -->
+        <form id="submissionForm" class="space-y-6">
+            <div>
+                <label for="nis" class="block text-sm font-medium text-gray-700">NIS</label>
+                <input type="number" id="nis" name="nis" required
+                       class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 transition duration-150 ease-in-out">
+            </div>
+            <div>
+                <label for="ketua_osis" class="block text-sm font-medium text-gray-700">Pilih Ketua OSIS</label>
+                <select id="ketua_osis" name="ketua_osis" required
+                        class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 transition duration-150 ease-in-out">
+                    <option value="" disabled selected>Pilih salah satu...</option>
+                    <option value="RIZKY ANANDA PUTRA">RIZKY ANANDA PUTRA</option>
+                    <option value="NAILA KHALISYA AKBAR">NAILA KHALISYA AKBAR</option>
+                    <option value="ARTHEO PUTRA SEFIAN">ARTHEO PUTRA SEFIAN</option>
+                    <option value="AGY SAPUTRA">AGY SAPUTRA</option>
+                    <option value="FATIKA ELVARETTA ATHILLA SYANDANA">FATIKA ELVARETTA ATHILLA SYANDANA</option>
+                    <option value="RASENDRIYA SAFI WICAKSONO">RASENDRIYA SAFI WICAKSONO</option>
+                </select>
+            </div>
+            <div>
+                <label for="ketua_mpk" class="block text-sm font-medium text-gray-700">Pilih Ketua MPK</label>
+                <select id="ketua_mpk" name="ketua_mpk" required
+                        class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 transition duration-150 ease-in-out">
+                    <option value="" disabled selected>Pilih salah satu...</option>
+                    <option value="NATHANAEL MARPAUNG">NATHANAEL MARPAUNG</option>
+                    <option value="LUNA AULIA MURTI">LUNA AULIA MURTI</option>
+                    <option value="ENRICO ORLANDO DIWANTO">ENRICO ORLANDO DIWANTO</option>
+                    <option value="AGAM INDRA SAKTI SUDIMAN">AGAM INDRA SAKTI SUDIMAN</option>
+                    <option value="EL KAUTSAR GARUDA HAKIKI">EL KAUTSAR GARUDA HAKIKI</option>
+                    <option value="CARISSA NIJANANDA DEWI">CARISSA NIJANANDA DEWI</option>
+                </select>
+            </div>
+            
+            <div class="flex justify-center">
+                <button type="submit" id="submitButton"
+                        class="w-full sm:w-auto px-6 py-3 bg-indigo-600 text-white font-semibold rounded-full shadow-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition duration-300 ease-in-out">
+                    Kirim Data
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const form = document.getElementById('submissionForm');
+            const submitButton = document.getElementById('submitButton');
+            const statusMessage = document.getElementById('statusMessage');
+
+            // GANTI DENGAN URL WEB APP GOOGLE APPS SCRIPT ANDA
+            const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbw1QTo11G8Nary9Tg0KiKXc_D0WvzfiL3Jcm0ts81viIZXyFDtdUUKiDKYF7NuE0NCwWQ/exec';
+
+            form.addEventListener('submit', async (e) => {
+                e.preventDefault(); // Mencegah form dikirim secara tradisional
+
+                // Tampilkan pesan loading dan nonaktifkan tombol
+                submitButton.textContent = 'Mengirim...';
+                submitButton.disabled = true;
+                statusMessage.textContent = '';
+                statusMessage.classList.add('hidden');
+
+                const formData = new FormData(form);
+                const data = new URLSearchParams(formData).toString();
+
+                try {
+                    const response = await fetch(SCRIPT_URL, {
+                        method: 'POST',
+                        body: data,
+                        headers: {
+                            'Content-Type': 'application/x-www-form-urlencoded'
+                        }
+                    });
+
+                    if (response.ok) {
+                        statusMessage.textContent = 'Data berhasil dikirim!';
+                        statusMessage.classList.remove('hidden', 'bg-red-200', 'text-red-700');
+                        statusMessage.classList.add('bg-green-200', 'text-green-700');
+                        form.reset(); // Mengosongkan formulir
+                        // Halaman akan otomatis kembali ke form yang kosong
+                    } else {
+                        throw new Error('Gagal mengirim data.');
+                    }
+                } catch (error) {
+                    console.error('Error:', error);
+                    statusMessage.textContent = 'Gagal mengirim data. Silakan coba lagi.';
+                    statusMessage.classList.remove('hidden', 'bg-green-200', 'text-green-700');
+                    statusMessage.classList.add('bg-red-200', 'text-red-700');
+                } finally {
+                    submitButton.textContent = 'Kirim Data';
+                    submitButton.disabled = false;
+                }
+            });
+        });
+    </script>
+</body>
+</html>
